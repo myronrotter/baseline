@@ -5,7 +5,7 @@ const generalUtils = require('../../utils/generalUtils');
 class DummyWrapper {
   constructor() {
     this.isConnected = whisperUtils.isConnected;
-    this.sendPrivateMessage = whisperUtils.sendPrivateMessage;
+    this.publish = whisperUtils.publish;
     this.getIdentities = generalUtils.getIdentities;
     this.findIdentity = generalUtils.findIdentity;
     this.getMessages = generalUtils.getMessages;
@@ -46,7 +46,7 @@ class DummyWrapper {
 
   }
 
-  async subscribeToPrivateMessages(userId, topic = DEFAULT_TOPIC) {
+  async subscribe(subject = DEFAULT_TOPIC, userId) {
 
   }
 }

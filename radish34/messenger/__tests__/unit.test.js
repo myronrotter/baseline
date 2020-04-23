@@ -75,27 +75,27 @@ describe('WhisperWrapper', () => {
     let messageId;
 
     describe('send messages', () => {
-      test('sendPrivateMessage() creates message from string', async () => {
+      test('publish() creates message from string', async () => {
         const messageContent = 'Test message 101';
-        const result = await messenger.sendPrivateMessage(
-          whisperId.publicKey,
-          fakeWhisperId,
+        const result = await messenger.publish(
           undefined,
           messageContent,
+          whisperId.publicKey,
+          fakeWhisperId,
         );
         expect(result.payload).toEqual(messageContent);
       });
 
-      test('sendPrivateMessage() creates message from JSON', async () => {
+      test('publish() creates message from JSON', async () => {
         const messageContent = {
           type: 'test_message',
           content: 'testing 123',
         };
-        const result = await messenger.sendPrivateMessage(
-          whisperId.publicKey,
-          fakeWhisperId,
+        const result = await messenger.publish(
           undefined,
           messageContent,
+          whisperId.publicKey,
+          fakeWhisperId,
         );
         messageId = result._id;
         expect(JSON.parse(result.payload)).toEqual(messageContent);

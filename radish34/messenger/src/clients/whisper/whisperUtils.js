@@ -14,15 +14,15 @@ async function isConnected() {
 }
 
 // Send private message
-async function sendPrivateMessage(
+async function publish(
+  subject = DEFAULT_TOPIC,
+  payload,
   senderId,
   recipientId,
-  topic = DEFAULT_TOPIC,
-  messageContent,
 ) {
-  let messageString = messageContent;
-  if (typeof messageContent === 'object') {
-    messageString = JSON.stringify(messageContent);
+  let messageString = payload;
+  if (typeof payload === 'object') {
+    messageString = JSON.stringify(payload);
   }
   const web3 = await web3utils.getWeb3();
   const content = web3.utils.fromAscii(messageString);
@@ -30,16 +30,16 @@ async function sendPrivateMessage(
   const { keyId } = whisperId;
   let hash;
   try {
-    const payload = {
+    const messageObj = {
       pubKey: recipientId,
       sig: keyId,
       ttl: TTL,
-      topic,
+      topic: subject,
       payload: content,
       powTime: POW_TIME,
       powTarget: POW_TARGET,
     };
-    hash = await web3.shh.post(payload);
+    hash = await web3.shh.post(messageObj);
   } catch (err) {
     logger.error('Whisper error:', err);
     return undefined;
@@ -57,7 +57,7 @@ async function sendPrivateMessage(
         recipientId,
         senderId,
         ttl: TTL,
-        topic,
+        topic: subject,
         payload: messageString,
         pow: POW_TARGET,
         sentDate: time,
@@ -73,7 +73,7 @@ async function sendPrivateMessage(
 
 module.exports = {
   isConnected,
-  sendPrivateMessage,
+  publish,
   DEFAULT_TOPIC,
   POW_TIME,
   TTL,

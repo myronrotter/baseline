@@ -14,7 +14,7 @@ const {
 class WhisperWrapper {
   constructor() {
     this.isConnected = whisperUtils.isConnected;
-    this.sendPrivateMessage = whisperUtils.sendPrivateMessage;
+    this.publish = whisperUtils.publish;
     this.getIdentities = generalUtils.getIdentities;
     this.findIdentity = generalUtils.findIdentity;
     this.getMessages = generalUtils.getMessages;
@@ -51,7 +51,7 @@ class WhisperWrapper {
       { upsert: true, new: true },
     );
 
-    this.subscribeToPrivateMessages(pubKey, DEFAULT_TOPIC);
+    this.subscribe(DEFAULT_TOPIC, pubKey);
     return { publicKey: result.publicKey, createdDate: result.createdDate };
   }
 
@@ -69,7 +69,7 @@ class WhisperWrapper {
           { keyId },
           { new: true },
         );
-        await this.subscribeToPrivateMessages(pubKey, DEFAULT_TOPIC);
+        await this.subscribe(DEFAULT_TOPIC, pubKey);
       } catch (err) {
         logger.error(
           `Error adding public key ${id.publicKey} to Whisper node: ${err}`,
@@ -126,15 +126,15 @@ class WhisperWrapper {
       messageId: data.hash,
     };
     const receiptString = JSON.stringify(receiptObject);
-    await this.sendPrivateMessage(
-      data.recipientPublicKey,
-      data.sig,
+    await this.publish(
       undefined,
       receiptString,
+      data.recipientPublicKey,
+      data.sig,
     );
   }
 
-  async subscribeToPrivateMessages(userId, topic = DEFAULT_TOPIC) {
+  async subscribe(subject = DEFAULT_TOPIC, userId) {
     // Find this identity in Mongo so we can get the associated keyId
     const whisperId = await Identity.findOne({ _id: userId });
     // Subscribe to private messages
@@ -143,7 +143,7 @@ class WhisperWrapper {
       .subscribe('messages', {
         minPow: POW_TARGET,
         privateKeyID: whisperId.keyId,
-        topics: [topic],
+        topics: [subject],
       })
       .on('data', async (data) => {
         // TODO check if sender is in my contacts before processing

@@ -7,7 +7,7 @@ export default async (job, done) => {
   const messenger = await getClient();
   let message;
   try {
-    message = await messenger.sendPrivateMessage(senderId, recipientId, undefined, payload);
+    message = await messenger.publish(undefined, payload, senderId, recipientId);
   } catch (error) {
     logger.error('Error', error);
   }

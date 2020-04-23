@@ -4,6 +4,8 @@ const logger = require('winston');
 const { getClient } = require('../utils/getClient.js');
 const Config = require('../../config');
 
+const { messagingType } = Config;
+
 let messenger;
 
 /**
@@ -16,7 +18,7 @@ let messenger;
 router.get('/health', async (req, res) => {
   const result = await messenger.isConnected();
   res.status(200);
-  res.send({ connected: result, type: Config.messagingType });
+  res.send({ connected: result, type: messagingType });
 });
 
 /**
@@ -135,11 +137,11 @@ router.post('/messages', async (req, res) => {
     });
     return;
   }
-  const result = await messenger.sendPrivateMessage(
-    myId,
-    req.body.recipientId,
+  const result = await messenger.publish(
     undefined,
     req.body.payload,
+    myId,
+    req.body.recipientId,
   );
   res.status(201);
   res.send(result);
@@ -150,10 +152,13 @@ async function initialize() {
   // Modularized here to enable use of other messenger services in the future
   logger.info('Initializing server...');
   messenger = await getClient();
-  const connected = await messenger.isConnected();
-  await messenger.loadIdentities();
-  await messenger.createFirstIdentity();
 
+  if (messagingType === 'whisper') {
+    await messenger.loadIdentities();
+    await messenger.createFirstIdentity();
+  }
+
+  const connected = await messenger.isConnected();
   return connected;
 }
 
