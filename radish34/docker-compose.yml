@@ -257,8 +257,8 @@ services:
     container_name: messenger-buyer
     depends_on:
       - mongo-buyer
+      - nats-buyer
       - redis-buyer
-      - geth-node
     build:
       context: ./messenger
       dockerfile: ./Dockerfile
@@ -285,8 +285,8 @@ services:
     container_name: messenger-supplier1
     depends_on:
       - mongo-supplier1
+      - nats-supplier1
       - redis-supplier1
-      - geth-node
     env_file:
       - ./messenger/docker.env
     build:
@@ -313,8 +313,8 @@ services:
     container_name: messenger-supplier2
     depends_on:
       - mongo-supplier2
+      - nats-supplier2
       - redis-supplier2
-      - geth-node
     env_file:
       - ./messenger/docker.env
     build:
@@ -391,6 +391,57 @@ services:
       - 27317:27017
     healthcheck:
       test: ["CMD", "sh", "health-check.sh"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nats-buyer:
+    image: provide/nats-server
+    container_name: nats-buyer
+    networks:
+      - network-buyer
+    ports:
+      - 4221:4221
+      - 4222:4222
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4221"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nats-supplier1:
+    image: provide/nats-server
+    container_name: nats-supplier1
+    networks:
+      - network-supplier1
+    ports:
+      - 4223:4221
+      - 4224:4222
+    expose:
+      - 4221
+      - 4222
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4221"]
+      interval: 15s
+      timeout: 10s
+      retries: 3
+      start_period: 10s
+
+  nats-supplier2:
+    image: provide/nats-server
+    container_name: nats-supplier2
+    networks:
+      - network-supplier2
+    ports:
+      - 4225:4221
+      - 4226:4222
+    expose:
+      - 4221
+      - 4222
+    healthcheck:
+      test: ["CMD", "wget", "--spider", "-q", "http://localhost:4221"]
       interval: 15s
       timeout: 10s
       retries: 3
@@ -489,97 +540,6 @@ services:
       retries: 3
       start_period: 10s
 
-  geth-node:
-    hostname: geth-node
-    container_name: geth-node
-    depends_on:
-       - geth-miner1
-       - geth-miner2
-    env_file:
-      - ./geth-env/node/docker.env
-    build:
-      context: ./geth-env
-      dockerfile: ./node/Dockerfile
-      args:
-        privatekey: 54c68a6104df07a9661b9b8fe1106263feeeddfd67aed8dafed1438040e421d1
-        password: word
-    networks:
-      - network-buyer
-      - network-supplier1
-      - network-supplier2
-      - network-geth
-    ports:
-       - 8547:8545
-       - 8548:8546
-    healthcheck:
-      test: ["CMD", "wget", "-q", "http://localhost:8545"]
-      interval: 15s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  geth-bootnode:
-    hostname: geth-bootnode
-    container_name: geth-bootnode
-    env_file:
-      - ./geth-env/bootnode/docker.env
-    build:
-      context: ./geth-env
-      dockerfile: ./bootnode/Dockerfile
-    networks:
-      network-geth:
-        ipv4_address: 172.25.0.101 # The miners need to know the IP address later on
-    ports:
-      - 30301:30301/udp
-
-  geth-miner1:
-    hostname: geth-miner1
-    container_name: geth-miner1
-    depends_on:
-      - geth-bootnode
-    env_file:
-      - ./geth-env/miner/miner_1.env
-    ports:
-      - 8544:8545/tcp
-    networks:
-      - network-geth
-    build:
-      context: ./geth-env
-      dockerfile: ./miner/Dockerfile
-      args:
-        privatekey: df504d175ae63abf209bad9dda965310d99559620550e74521a6798a41215f46
-        password: pass
-    healthcheck:
-      test: ["CMD", "wget", "-q", "http://localhost:8545"]
-      interval: 15s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
-  geth-miner2:
-    hostname: geth-miner2
-    container_name: geth-miner2
-    depends_on:
-      - geth-bootnode
-    env_file:
-      - ./geth-env/miner/miner_2.env
-    ports:
-      - 8542:8545/tcp
-    networks:
-      - network-geth
-    build:
-      context: ./geth-env
-      dockerfile: ./miner/Dockerfile
-      args:
-        privatekey: bc5b578e0dcb2dbf98dd6e5fe62cb5a28b84a55e15fc112d4ca88e1f62bd7c35
-        password: word
-    healthcheck:
-      test: ["CMD", "wget", "-q", "http://localhost:8545"]
-      interval: 15s
-      timeout: 10s
-      retries: 3
-      start_period: 10s
-
 volumes:
   mongo-buyer:
   mongo-supplier1:
@@ -588,11 +548,6 @@ volumes:
   chaindata:
 
 networks:
-  network-geth:
-    driver: bridge
-    ipam:
-      config:
-      - subnet: 172.25.0.0/24
   network-buyer:
   network-supplier1:
   network-supplier2:
