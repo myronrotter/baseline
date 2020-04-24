@@ -18,5 +18,5 @@ module.exports = {
     socketTimeoutMS: 0, // Use os-default, only useful when a network issue occurs and the peer becomes unavailable
     keepAlive: true, // KEEP ALIVE!
   },
-  messagingType: 'whisper',
+  messagingType: process.env.CLIENT_TYPE || 'whisper',
 };

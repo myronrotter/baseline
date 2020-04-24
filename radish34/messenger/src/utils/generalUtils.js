@@ -104,7 +104,7 @@ async function getSingleMessage(messageId) {
  * @param {Object} messageData 
  * @param {String} content 
  */
-async function storeNewMessage(messageData, content) {
+async function storeNewMessage(messageData, payloadAscii) {
   const { hash, recipientPublicKey, sig, ttl, topic, pow, timestamp } = messageData;
   return Message.findOneAndUpdate(
     { _id: hash },
@@ -115,7 +115,7 @@ async function storeNewMessage(messageData, content) {
       senderId: sig,
       ttl,
       topic,
-      payload: content,
+      payload: payloadAscii,
       pow,
       sentDate: timestamp,
     },

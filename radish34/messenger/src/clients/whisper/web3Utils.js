@@ -3,8 +3,8 @@ const logger = require('winston');
 const Config = require('../../../config');
 
 const userIndex = process.env.USER_INDEX || 0;
-const { messengerPort } = Config.users[userIndex];
-const { ipAddress } = Config.users[userIndex];
+const { messengerPort } = Config.whisper.users[userIndex];
+const { ipAddress } = Config.whisper.users[userIndex];
 
 let web3client;
 

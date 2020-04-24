@@ -80,11 +80,11 @@ class WhisperWrapper {
 
   async checkMessageContent(data) {
     const web3 = await web3utils.getWeb3();
-    const content = await web3.utils.toAscii(data.payload);
+    const payloadAscii = await web3.utils.toAscii(data.payload);
     // Check if this is a JSON structured message
-    const [isJSON, messageObj] = await generalUtils.hasJsonStructure(content);
+    const [isJSON, messageObj] = await generalUtils.hasJsonStructure(payloadAscii);
     // Store raw message
-    let doc = await generalUtils.storeNewMessage(data, content);
+    let doc = await generalUtils.storeNewMessage(data, payloadAscii);
     if (isJSON) {
       if (messageObj.type === 'delivery_receipt') {
         // Check if receipt came from original recipient

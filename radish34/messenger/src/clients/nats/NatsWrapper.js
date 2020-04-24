@@ -5,7 +5,7 @@ const logger = require('winston');
 const Identity = require('../../db/models/Identity.js');
 const Message = require('../../db/models/Message.js');
 
-export class NatsWrapper {
+class NatsWrapper {
 
   constructor(config, getBearerToken) {
     this.bearerToken = null;
@@ -75,7 +75,7 @@ export class NatsWrapper {
   }
 
   async publish(subject, data) {
-    let messageId = uuid();
+    const messageId = uuid();
     data.uuid = messageId;
     let messageString = JSON.stringify(data);
     this.service.publish(subject, messageString);
@@ -154,3 +154,5 @@ export class NatsWrapper {
     return unsubscribeFrom;
   }
 }
+
+module.exports = NatsWrapper;

@@ -5,7 +5,7 @@ const logger = require('winston');
 const apiRouter = require('./api/rest-express');
 const { RequestLogger, RequestErrorLogger } = require('./api/loggers-express');
 
-async function startServer(apiPort) {
+async function startServer() {
   logger.info('Starting Express ...');
   const app = express();
 
@@ -15,6 +15,7 @@ async function startServer(apiPort) {
   app.use('/bulls', UI);
   app.use(RequestErrorLogger());
 
+  const apiPort = '4001';
   app.listen(apiPort, () => logger.info(`🚀 REST-Express server listening on port ${apiPort}`));
 
   await apiRouter.initialize();

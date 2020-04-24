@@ -17,12 +17,12 @@ beforeAll(async () => {
   generalUtils.forwardMessage = jest.fn();
 
   // Create mongoose connection to db
-  await mongoose.connect(Config.users[0].dbUrl, Config.mongoose);
+  await mongoose.connect(Config.whisper.users[0].dbUrl, Config.mongoose);
   await Identity.deleteMany();
   await Message.deleteMany();
 
   // Create native mongo connection to db
-  nativeClient = await MongoClient.connect(Config.users[0].dbUrl, { useUnifiedTopology: true });
+  nativeClient = await MongoClient.connect(Config.whisper.users[0].dbUrl, { useUnifiedTopology: true });
   db = nativeClient.db();
 });
 
@@ -98,6 +98,7 @@ describe('WhisperWrapper', () => {
           fakeWhisperId,
         );
         messageId = result._id;
+        expect(messageId).not.toBeUndefined();
         expect(JSON.parse(result.payload)).toEqual(messageContent);
       });
     });

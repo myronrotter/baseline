@@ -10,23 +10,20 @@ module.exports = {
   },
   users: [
     {
-      ipAddress: '127.0.0.1',
+      ipAddress: 'localhost',
       messengerPort: '8546',
-      apiPort: '4001',
       origin: 'mychat2',
       dbUrl: 'mongodb://mongo-buyer:27017/radish34_dev_1',
     },
     {
-      ipAddress: '127.0.0.1',
+      ipAddress: 'localhost',
       messengerPort: '8548',
-      apiPort: '4002',
       origin: 'mychat2',
       dbUrl: 'mongodb://mongo-supplier1:27017/radish34_dev_2',
     },
     {
-      ipAddress: '127.0.0.1',
+      ipAddress: 'localhost',
       messengerPort: '8550',
-      apiPort: '4003',
       origin: 'mychat2',
       dbUrl: 'mongodb://mongo-supplier2:27017/radish34_dev_3',
     },
