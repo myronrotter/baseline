@@ -49,6 +49,7 @@
     "express-winston": "^4.0.3",
     "mongoose": "^5.9.5",
     "ts-natsutil": "1.0.6",
+    "uuidv4": "^6.0.7",
     "web3": "^1.2.6",
     "winston": "^3.2.1"
   },

@@ -3,7 +3,6 @@ const router = express.Router();
 const logger = require('winston');
 const { getClient } = require('../utils/getClient.js');
 const Config = require('../../config');
-
 const { messagingType } = Config;
 
 let messenger;
