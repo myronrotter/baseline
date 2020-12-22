@@ -8,4 +8,5 @@ export {
   IZKSnarkWitnessComputation,
   zkSnarkCircuitProviderServiceFactory,
   zkSnarkCircuitProviderServiceZokrates,
+  zkSnarkCircuitProviderServiceSnarkJS,
 } from './zkp';

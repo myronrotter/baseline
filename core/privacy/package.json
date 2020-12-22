@@ -19,8 +19,12 @@
   "dependencies": {
     "@types/uuid": "^8.0.0",
     "big-integer": "^1.6.48",
+    "circom": "^0.5.35",
+    "fastfile": "0.0.19",
     "hex-to-binary": "^1.0.1",
     "keccak": "^3.0.1",
+    "path": "^0.12.7",
+    "snarkjs": "^0.3.44",
     "zokrates-js": "^1.0.25"
   },
   "devDependencies": {

@@ -1,7 +1,9 @@
 import { zokratesServiceFactory } from './zokrates';
+import { snarkjsServiceFactory } from './snarkjs';
 import { VerificationKey } from 'zokrates-js';
 
 export const zkSnarkCircuitProviderServiceZokrates = 'zokrates';
+export const zkSnarkCircuitProviderServiceSnarkJS = 'snarkjs';
 
 export interface IZKSnarkCircuitProvider {
   compile(source: string, location: string): Promise<IZKSnarkCompilationArtifacts>;
@@ -41,6 +43,9 @@ export async function zkSnarkCircuitProviderServiceFactory(
   switch (provider) {
     case zkSnarkCircuitProviderServiceZokrates:
       service = await zokratesServiceFactory(config);
+      break;
+    case zkSnarkCircuitProviderServiceSnarkJS:
+      service = await snarkjsServiceFactory(config);
       break;
     default:
       throw new Error('zkSnark circuit provider service required');
