@@ -3,3 +3,4 @@ export * from './excel';
 export * from './salesforce';
 export * from './sap';
 export * from './ram';
+export * from './mongodb';

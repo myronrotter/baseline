@@ -16,7 +16,10 @@
     "clean": "rm -rf ./dist",
     "test": "./node_modules/.bin/mocha --require esm --require ts-node/register test/**/*.spec.ts --timeout 30000000000 --unhandled-rejections=strict --max-old-space-size=8192"
   },
-  "dependencies": {},
+  "dependencies": {
+    "@baseline-protocol/types": "^1.1.0",
+    "mongodb": "^3.6.3"
+  },
   "devDependencies": {
     "@types/jsonwebtoken": "^8.3.4",
     "@types/mocha": "^8.2.0",
