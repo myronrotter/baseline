@@ -2,6 +2,8 @@ import { IPersistenceService } from './..';
 import { ILogger } from '@baseline-protocol/types';
 import { Logger } from 'mongodb';
 
+// https://mongodb.github.io/node-mongodb-native/3.5/api/Logger.html
+// https://docs.mongodb.com/drivers/node/fundamentals/logging
 class MongodbLogger implements ILogger {
 
   private logger: Logger;
@@ -74,7 +76,7 @@ export class Mongodb implements IPersistenceService {
   }
 }
 
-export async function sapServiceFactory(
+export async function mongodbServiceFactory(
   config?: any,
 ): Promise<Mongodb> {
   return new Mongodb(config);
